@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Gnostic 代码生成
+
+Gnostic 的编译代码和 OpenAPI Protocol Buffer 模型是使用代码生成器从 OpenAPI JSON Schema 自动生成的。
+这使得 Protocol Buffer 模型可以用于生成类型安全的代码来处理 OpenAPI 描述。
+
+## 生成器位置
+
+- [generate-gnostic/](mdc:generate-gnostic/) - 代码生成器源代码
+- [COMPILE-PROTOS.sh](mdc:COMPILE-PROTOS.sh) - 编译 Protocol Buffers 的脚本
+
+## 生成的文件
+
+生成的代码位于以下目录：
+- [openapiv2/](mdc:openapiv2/) - OpenAPI v2 模型
+- [openapiv3/](mdc:openapiv3/) - OpenAPI v3 模型
+- [discovery/](mdc:discovery/) - Discovery API 模型
+
+## 重新生成代码
+
+1. 安装生成器：
+```bash
+go install ./generate-gnostic
+```
+
+2. 生成代码：
+```bash
+generate-gnostic --v2
+generate-gnostic --v3
+generate-gnostic --discovery
+```
+
+## 注意事项
+
+- 生成的代码已经预先生成并提交到仓库中
+- 只有在修改 JSON Schema 或生成器时才需要重新生成代码
+- 确保在提交前运行测试以验证生成的代码
