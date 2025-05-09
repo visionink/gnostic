@@ -19,8 +19,8 @@ package main
 import (
 	"log"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 
 	openapiv2 "github.com/google/gnostic/openapiv2"
 	openapiv3 "github.com/google/gnostic/openapiv3"
@@ -62,9 +62,8 @@ func main() {
 	{
 		file := &plugins.File{}
 		file.Name = "plugin-request.json"
-		m := jsonpb.Marshaler{Indent: " "}
-		s, err := m.MarshalToString(env.Request)
-		file.Data = []byte(s)
+		s, err := protojson.Marshal(env.Request)
+		file.Data = s
 		env.RespondAndExitIfError(err)
 		env.Response.Files = append(env.Response.Files, file)
 	}

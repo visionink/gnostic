@@ -20,7 +20,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/golang/protobuf/jsonpb"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	discovery "github.com/google/gnostic/discovery"
 	metrics "github.com/google/gnostic/metrics"
@@ -242,7 +242,7 @@ func TestSampleVocabularyV2(t *testing.T) {
 		t.FailNow()
 	}
 	reference := metrics.Vocabulary{}
-	jsonpb.UnmarshalString(string(referenceData), &reference)
+	protojson.Unmarshal(referenceData, &reference)
 	testVocabulary(t,
 		v1,
 		&reference,
@@ -271,7 +271,7 @@ func TestSampleVocabularyV3(t *testing.T) {
 		t.FailNow()
 	}
 	reference := metrics.Vocabulary{}
-	jsonpb.UnmarshalString(string(referenceData), &reference)
+	protojson.Unmarshal(referenceData, &reference)
 	testVocabulary(t,
 		v1,
 		&reference,
@@ -300,7 +300,7 @@ func TestSampleVocabularyDiscovery(t *testing.T) {
 		t.FailNow()
 	}
 	reference := metrics.Vocabulary{}
-	jsonpb.UnmarshalString(string(referenceData), &reference)
+	protojson.Unmarshal(referenceData, &reference)
 	testVocabulary(t,
 		v1,
 		&reference,

@@ -28,7 +28,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	"gopkg.in/yaml.v3"
 
 	"github.com/google/gnostic/compiler"
@@ -241,9 +242,11 @@ func isURL(path string) bool {
 
 // Write bytes to a named file.
 // Certain names have special meaning:
-//   ! writes nothing
-//   - writes to stdout
-//   = writes to stderr
+//
+//	! writes nothing
+//	- writes to stdout
+//	= writes to stderr
+//
 // If a directory name is given, the file is written there with
 // a name derived from the source and extension arguments.
 func writeFile(name string, bytes []byte, source string, extension string) {
@@ -508,8 +511,12 @@ func (g *Gnostic) writeBinaryOutput(message proto.Message) error {
 
 // Write a text pb representation.
 func (g *Gnostic) writeTextOutput(message proto.Message) {
-	bytes := []byte(proto.MarshalTextString(message))
-	writeFile(g.textOutputPath, bytes, g.sourceName, "text")
+	bytes, err := prototext.Marshal(message)
+	if err != nil {
+		writeFile(g.errorOutputPath, g.errorBytes(err), g.sourceName, "errors")
+	} else {
+		writeFile(g.textOutputPath, bytes, g.sourceName, "text")
+	}
 }
 
 // Write JSON/YAML OpenAPI representations.
