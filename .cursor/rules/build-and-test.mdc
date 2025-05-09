@@ -3,3 +3,40 @@ description:
 globs:
 alwaysApply: false
 ---
+# Gnostic 构建、安装和测试
+
+本指南说明了如何构建、安装和测试 `gnostic` 项目。
+
+## 环境要求
+
+- [Go](http://golang.org) (版本 1.11 或更高，支持 Go Modules)
+- [Protocol Buffer Compiler (`protoc`)](https://github.com/protocolbuffers/protobuf)
+
+## 安装步骤
+
+1.  **克隆仓库**:
+    ```bash
+    git clone https://github.com/google/gnostic
+    cd gnostic
+    ```
+2.  **验证 `protoc`**: 确保 `protoc` 已安装并配置在您的系统中。
+3.  **构建 `gnostic`**:
+    ```bash
+    make
+    ```
+    此命令会执行以下操作：
+    - 使用 [go generate](https://blog.golang.org/generate) 构建支持代码。
+    - 通过 [COMPILE-PROTOS.sh](mdc:COMPILE-PROTOS.sh) 脚本调用 `protoc` 生成代码。此脚本会自动从 [github.com/golang/protobuf](https://github.com/golang/protobuf) 下载 Go `protoc` 插件。
+    - 构建仓库中所有的插件和相关工具。
+    - 主要的构建逻辑和依赖项可以在 [Makefile](mdc:Makefile) 中找到。
+
+4.  **运行测试**:
+    ```bash
+    make test
+    ```
+    这些测试是 `gnostic` 持续集成的一部分，预期在所有发布版本中都能通过。
+
+## 注意事项
+
+- 项目使用 Go Modules 进行依赖管理 ([go.mod](mdc:go.mod), [go.sum](mdc:go.sum))。
+- `COMPILE-PROTOS.sh` 脚本对于从 `.proto` 文件生成 Go 代码至关重要。

@@ -3,3 +3,60 @@ description:
 globs:
 alwaysApply: false
 ---
+# Gnostic 关键目录和文件
+
+本规则总结了 `gnostic` 项目中的一些关键目录和文件及其用途。
+
+## 主要 Go 源文件
+
+- [gnostic.go](mdc:gnostic.go): `gnostic` 命令行工具的主要入口点和执行逻辑。
+- [gnostic_test.go](mdc:gnostic_test.go): `gnostic` 工具的主要测试文件。
+
+## 代码生成
+
+- [generate-gnostic/](mdc:generate-gnostic/): `gnostic` 自身代码生成器的源代码。它用于从 JSON Schema 生成 Protocol Buffer 模型和相关的 Go 代码。
+- [COMPILE-PROTOS.sh](mdc:COMPILE-PROTOS.sh): 用于编译 `.proto` 文件为 Go 代码的 Shell 脚本，通常在构建过程中被 `Makefile` 调用。
+- **生成的模型目录**:
+    - [openapiv2/](mdc:openapiv2/): 包含生成的 OpenAPI v2 的 Protocol Buffer 模型和相关 Go 代码。
+    - [openapiv3/](mdc:openapiv3/): 包含生成的 OpenAPI v3 的 Protocol Buffer 模型和相关 Go 代码。
+    - [discovery/](mdc:discovery/): 包含生成的 Discovery API 的 Protocol Buffer 模型和相关 Go 代码。
+
+## 命令行工具和应用
+
+- [cmd/](mdc:cmd/): 存放项目中的命令行工具。
+    - [cmd/gnostic/](mdc:cmd/gnostic/): `gnostic` 工具本身的 `main` 包 (如果主要逻辑在顶层 `gnostic.go` 之外)。(注：根据现有信息，`gnostic.go` 在根目录，此条可能需要根据实际 `cmd/gnostic/` 内容调整)
+    - [cmd/protoc-gen-openapi/](mdc:cmd/protoc-gen-openapi/): `protoc` 插件，用于从 Protocol Buffer 定义生成 OpenAPI v2 描述。
+- [apps/](mdc:apps/): 包含一些示例应用程序。
+    - [apps/report/](mdc:apps/report/): 一个读取和报告 `gnostic` 生成的 `.pb` 文件的示例应用。
+
+## 核心库和逻辑
+
+- [compiler/](mdc:compiler/): 可能包含 `gnostic` 的核心编译逻辑，用于处理 OpenAPI 描述并转换为 Protocol Buffer。
+- [surface/](mdc:surface/): 可能与 API 的表面模型或中间表示相关。
+- [lib/](mdc:lib/): 通用库代码。
+- [extensions/](mdc:extensions/): 处理 OpenAPI 扩展的逻辑。
+- [conversions/](mdc:conversions/): 不同格式之间转换的逻辑。
+
+## 插件系统
+
+- [plugins/](mdc:plugins/): 包含 `gnostic` 的插件实现。
+    - [plugins/plugin.proto](mdc:plugins/plugin.proto): 定义插件与 `gnostic` 核心交互的 Protocol Buffer 契约。
+    - [plugins/gnostic-vocabulary/](mdc:plugins/gnostic-vocabulary/): `gnostic-vocabulary` 插件的源代码。
+- [metrics/](mdc:metrics/): 可能包含与 API 度量相关的定义，例如 [metrics/vocabulary.proto](mdc:metrics/vocabulary.proto)。
+
+## 构建和配置
+
+- [Makefile](mdc:Makefile): 定义了项目的构建、测试等自动化任务。
+- [go.mod](mdc:go.mod): Go Modules 文件，定义项目模块和依赖。
+- [go.sum](mdc:go.sum): Go Modules 文件，包含依赖项的校验和。
+
+## 示例和测试
+
+- [examples/](mdc:examples/): 包含各种 OpenAPI 示例文档，用于测试和演示。
+- [testdata/](mdc:testdata/): 存放测试用的数据文件。
+
+## 其他
+
+- [README.md](mdc:README.md): 项目的主要文档，包含概览、安装、使用等信息。
+- [LICENSE](mdc:LICENSE): 项目的开源许可证。
+- [CONTRIBUTING.md](mdc:CONTRIBUTING.md):贡献指南。

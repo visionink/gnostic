@@ -3,3 +3,66 @@ description:
 globs:
 alwaysApply: false
 ---
+# Gnostic 使用方法与示例
+
+本指南介绍了 `gnostic` 命令行工具的基本用法和一些示例。
+
+## 基本用法
+
+`gnostic` 工具用于将 OpenAPI 文档编译为 Protocol Buffer 格式，或进行其他相关操作。
+
+### 将 OpenAPI (JSON/YAML) 编译为 Protocol Buffer (二进制)
+
+```bash
+gnostic --pb-out=<output_directory> <input_openapi_file_path_or_url>
+```
+
+**示例**:
+将本地 `petstore.json` 文件编译为当前目录下的 `petstore.pb`：
+```bash
+gnostic --pb-out=. examples/v2.0/json/petstore.json
+```
+参考示例文件：[examples/v2.0/json/petstore.json](mdc:examples/v2.0/json/petstore.json)
+
+### 将 OpenAPI (JSON/YAML) 编译为 Protocol Buffer (文本表示)
+
+这种格式主要用于测试和调试。
+```bash
+gnostic --text-out=<output_text_file> <input_openapi_file_path_or_url>
+```
+
+**示例**:
+从 URL 编译并输出文本表示到 `petstore.text`：
+```bash
+gnostic --text-out=petstore.text https://raw.githubusercontent.com/google/gnostic/master/examples/v2.0/json/petstore.json
+```
+
+## 关键命令行参数
+
+- `--pb-out=<dir>`: 指定二进制 Protocol Buffer 输出文件的目录。
+- `--text-out=<file>`: 指定文本表示的 Protocol Buffer 输出文件的路径。
+- `--json-out=<dir>`: 将输入的 Protocol Buffer (通过 `--pb-in` 或标准输入) 转换为 JSON OpenAPI 并输出到指定目录。
+- `--yaml-out=<dir>`: 将输入的 Protocol Buffer (通过 `--pb-in` 或标准输入) 转换为 YAML OpenAPI 并输出到指定目录。
+- `--pb-in=<file>`: 指定输入的二进制 Protocol Buffer 文件路径。
+- (其他插件相关参数, 例如 `--<plugin_name>_out=...`)
+
+更多参数和用法可以通过 `gnostic --help` 查看。
+
+## 示例应用
+
+- **`apps/report`**: 一个示例应用，用于读取由 `gnostic` 生成的二进制 Protocol Buffer 文件。
+  安装 (通常由顶级 `Makefile` 自动安装):
+  ```bash
+  go install ./apps/report
+  ```
+  运行:
+  ```bash
+  report petstore.pb
+  ```
+  相关代码: [apps/report/](mdc:apps/report/)
+
+## 示例 OpenAPI 文件
+
+项目在 `examples/` 目录下提供了多种版本的 OpenAPI 示例文件，可用于测试和学习。
+- [examples/v2.0/](mdc:examples/v2.0/)
+- [examples/v3.0/](mdc:examples/v3.0/)
