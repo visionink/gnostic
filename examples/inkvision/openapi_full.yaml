@@ -1,0 +1,82 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Greeter API
+    description: The greeting service definition.
+    version: 0.0.1
+paths:
+    /helloworld/{name}:
+        get:
+            tags:
+                - Greeter
+            description: Sends a greeting
+            operationId: Greeter_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: from
+                  in: query
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/helloworld.v1.HelloReply"
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorStatus"
+components:
+    schemas:
+        ErrorStatus:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                    description: 错误码
+                reason:
+                    type: string
+                    description: 错误原因标识符
+                message:
+                    type: string
+                    description: 错误详细信息
+                metadata:
+                    type: object
+            additionalProperties:
+                type: string
+            description: 错误相关的元数据信息
+            required:
+                - code
+                - reason
+                - message
+        helloworld.v1.HelloReply:
+            required:
+                - message
+            type: object
+            properties:
+                message:
+                    type: string
+                from:
+                    enum:
+                        - COUNTRY_UNSPECIFIED
+                        - COUNTRY_CHINA
+                        - COUNTRY_USA
+                        - COUNTRY_JAPAN
+                        - COUNTRY_UK
+                        - COUNTRY_CANADA
+                    type: string
+                    format: enum
+            description: The response message containing the greetings
+tags:
+    - name: Greeter
