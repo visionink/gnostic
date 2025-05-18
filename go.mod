@@ -1,4 +1,4 @@
-module github.com/google/gnostic
+module github.com/visionink/gnostic
 
 go 1.24
 
