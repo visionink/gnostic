@@ -43,6 +43,7 @@ type Configuration struct {
 	EnumType        *string
 	CircularDepth   *int
 	DefaultResponse *bool
+	DefaultSchema   *string
 	OutputMode      *string
 }
 
@@ -572,26 +573,46 @@ func (g *OpenAPIv3Generator) buildOperationV3(
 
 	// Add the default reponse if needed
 	if *g.conf.DefaultResponse {
-		anySchemaName := g.reflect.formatMessageName(anyProtoDesc)
-		anySchema := wk.NewGoogleProtobufAnySchema(anySchemaName)
-		g.addSchemaToDocumentV3(d, anySchema)
+		var defaultResponse *v3.NamedResponseOrReference
 
-		statusSchemaName := g.reflect.formatMessageName(statusProtoDesc)
-		statusSchema := wk.NewGoogleRpcStatusSchema(statusSchemaName, anySchemaName)
-		g.addSchemaToDocumentV3(d, statusSchema)
-
-		defaultResponse := &v3.NamedResponseOrReference{
-			Name: "default",
-			Value: &v3.ResponseOrReference{
-				Oneof: &v3.ResponseOrReference_Response{
-					Response: &v3.Response{
-						Description: "Default error response",
-						Content: wk.NewApplicationJsonMediaType(&v3.SchemaOrReference{
-							Oneof: &v3.SchemaOrReference_Reference{
-								Reference: &v3.Reference{XRef: "#/components/schemas/" + statusSchemaName}}}),
+		if *g.conf.DefaultSchema != "" {
+			// 使用自定义 Schema
+			defaultResponse = &v3.NamedResponseOrReference{
+				Name: "default",
+				Value: &v3.ResponseOrReference{
+					Oneof: &v3.ResponseOrReference_Response{
+						Response: &v3.Response{
+							Description: "Default error response",
+							Content: wk.NewApplicationJsonMediaType(&v3.SchemaOrReference{
+								Oneof: &v3.SchemaOrReference_Reference{
+									Reference: &v3.Reference{XRef: "#/components/schemas/" + *g.conf.DefaultSchema}}}),
+						},
 					},
 				},
-			},
+			}
+		} else {
+			// 使用默认的 google.rpc.Status
+			anySchemaName := g.reflect.formatMessageName(anyProtoDesc)
+			anySchema := wk.NewGoogleProtobufAnySchema(anySchemaName)
+			g.addSchemaToDocumentV3(d, anySchema)
+
+			statusSchemaName := g.reflect.formatMessageName(statusProtoDesc)
+			statusSchema := wk.NewGoogleRpcStatusSchema(statusSchemaName, anySchemaName)
+			g.addSchemaToDocumentV3(d, statusSchema)
+
+			defaultResponse = &v3.NamedResponseOrReference{
+				Name: "default",
+				Value: &v3.ResponseOrReference{
+					Oneof: &v3.ResponseOrReference_Response{
+						Response: &v3.Response{
+							Description: "Default error response",
+							Content: wk.NewApplicationJsonMediaType(&v3.SchemaOrReference{
+								Oneof: &v3.SchemaOrReference_Reference{
+									Reference: &v3.Reference{XRef: "#/components/schemas/" + statusSchemaName}}}),
+						},
+					},
+				},
+			}
 		}
 
 		responses.ResponseOrReference = append(responses.ResponseOrReference, defaultResponse)
